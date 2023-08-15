@@ -1,16 +1,66 @@
-# Cache objects
-packer_cache/
+# MacOS
+## Ignore desktop services files.
+**/.DS_Store
 
-# Crash log
+# Certificates and Keys
+## Ignore certificates files.
+**/*.cer
+**/*.crt
+**/*.p7b
+## Ignore public key files
+**/*.pub
+
+# HashiCorp Packer
+## Ignore cache directories.
+packer_cache/
+## Ignore crash log files.
 crash.log
 
-# https://www.packer.io/guides/hcl/variables
-# Exclude all .pkrvars.hcl files, which are likely to contain sensitive data, 
-# such as password, private keys, and other secrets. These should not be part of 
-# version control as they are data points which are potentially sensitive and 
-# subject to change depending on the environment.
-#
-*.pkrvars.hcl
+# HashiCorp Terraform
+## Ignore .terraform directories.
+**/.terraform/*
+## Ignore dependency lock files.
+.terraform.lock.hcl
+## Ignore .tfstate files
+*.tfstate
+*.tfstate.*
+## Ignore crash.log files.
+crash.log
+crash.*.log
+## Ignore .tfvars files.
+*.tfvars
+*.tfvars.json
+## Ignore override files.
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+## Ignore tfplan files.
+*tfplan*
+## Ignore configuration files.
+.terraformrc
+terraform.rc
 
-# For built boxes
-*.box
+# Configurations
+## Ignore default config directory.
+config/
+
+# Artifacts
+## Ignore artifacts directory.
+artifacts/**/*.mf
+artifacts/**/*.nvram
+artifacts/**/*.ovf
+artifacts/**/*.vmdk
+
+# Manifests
+## Ignore manifests directory.
+manifests/*.json
+
+# Trunk.io
+## Ignore trunk directory.
+.trunk/actions
+.trunk/logs
+.trunk/notifications
+.trunk/out
+.trunk/plugins/trunk
+.trunk/trunk.yaml
