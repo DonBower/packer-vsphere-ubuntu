@@ -1,8 +1,22 @@
 # Release History
 
-## .Next
+## 0.1.1
 
-> Release Date: Unreleased
+> Release Date: 2023-08-15
+
+:boom: **Enhancement**:
+
+- Clean up terraform code close issue #1
+Just ran terraform fmt aginst all the `./terraform/*/*.tf` files
+
+:sweat_drops: **Chore**:
+
+- Updates Remove extra code, clean up.
+- Discover more github actions
+
+## 0.1.0
+
+> Release Date: 2023-08-15
 
 :boom: **Enhancement**:
 
