@@ -15,6 +15,7 @@ jobs:
       - name: Lint Code
         uses: github/super-linter@45fc0d88288beee4701c62761281edfee85655d7 # v5.0.0
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           FILTER_REGEX_EXCLUDE: "build.tmpl"
           IGNORE_GITIGNORED_FILES: true
           VALIDATE_ALL_CODEBASE: true
