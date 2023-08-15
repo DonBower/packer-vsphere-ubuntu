@@ -12,7 +12,7 @@ Just ran terraform fmt aginst all the `./terraform/*/*.tf` files
 :sweat_drops: **Chore**:
 
 - Updates Remove extra code, clean up.
-- Discover more github actions
+- Discover more GitHub actions
 
 ## 0.1.0
 
