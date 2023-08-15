@@ -5,106 +5,106 @@
 # Credentials
 
 variable "vsphere_server" {
-  type = string
+  type        = string
 }
 
 variable "vsphere_username" {
-  type = string
-  sensitive = true
+  type        = string
+  sensitive   = true
 }
 
 variable "vsphere_password" {
-  type = string
-  sensitive = true
+  type        = string
+  sensitive   = true
 }
 
 variable "vsphere_insecure" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 # vSphere Settings
 
 variable "vsphere_datacenter" {
-  type = string
+  type        = string
 }
 
 variable "vsphere_cluster" {
-  type = string
+  type        = string
 }
 
 variable "vsphere_datastore" {
-  type = string
+  type        = string
 }
 
 variable "vsphere_folder" {
-  type = string
+  type        = string
 }
 
 variable "vsphere_network" {
-  type = string
+  type        = string
 }
 
 # HCP Packer Settings
 
 variable "hcp_packer_bucket_name" {
-  type = string
+  type        = string
 }
 
 variable "hcp_packer_channel" {
-  type = string
+  type        = string
 }
 
 # Virtual Machine Settings
 
 variable "vm_name" {
-  type = string
+  type        = string
 }
 
 variable "vm_cpus" {
-  type = string
+  type        = string
 }
 
 variable "vm_memory" {
-  type = string
+  type        = string
 }
 
 variable "vm_disk_size" {
-  type = string
+  type        = string
 }
 
 variable "vm_firmware" {
-  type = string
+  type        = string
 }
 
 variable "vm_efi_secure_boot_enabled" {
-  type = bool
+  type        = bool
 }
 
 variable "vm_hostname" {
-  type = string
+  type        = string
 }
 
 variable "vm_domain" {
-  type = string
+  type        = string
 }
 
 variable "vm_ipv4_address" {
-  type = string
+  type        = string
 }
 
 variable "vm_ipv4_netmask" {
-  type = string
+  type        = string
 }
 
 variable "vm_ipv4_gateway" {
-  type = string
+  type        = string
 }
 
 variable "vm_dns_suffix_list" {
-  type = list(string)
+  type        = list(string)
 }
 
 variable "vm_dns_server_list" {
-  type = list(string)
+  type        = list(string)
 }
