@@ -1,8 +1,8 @@
 # Packer Examples for VMware vSphere
 
-![Last Commit](https://img.shields.io/github/last-commit/vmware-samples/packer-examples-for-vsphere?style=for-the-badge&logo=github)&nbsp;&nbsp;
+![Last Commit](https://img.shields.io/github/last-commit/DonBower/packer-vsphere-ubuntu?style=for-the-badge&logo=github)&nbsp;&nbsp;
 [![The Changelog](https://img.shields.io/badge/The%20Changelog-Read-blue?style=for-the-badge&logo=github)](CHANGELOG.md)&nbsp;&nbsp;
-![Packer 1.9.1+](https://img.shields.io/badge/HashiCorp%20Packer-1.9.1+-blue?style=for-the-badge&logo=packer&logoColor=white)
+![Packer 1.9.2](https://img.shields.io/badge/HashiCorp%20Packer-1.9.2-blue?style=for-the-badge&logo=packer&logoColor=white)
 
 ## Table of Contents
 
@@ -15,46 +15,14 @@
 
 ## Introduction
 
-This repository provides infrastructure-as-code examples to automate the creation of virtual machine images and their guest operating systems on VMware vSphere using [HashiCorp Packer][packer] and the [Packer Plugin for VMware vSphere][packer-plugin-vsphere] (`vsphere-iso` builder). All examples are authored in the HashiCorp Configuration Language ("HCL2").
+This repository provides infrastructure-as-code to automate the creation of a virtual machine image for VMWare vSphere 7 using [HashiCorp Packer][packer] and the [Packer Plugin for VMware vSphere][packer-plugin-vsphere] (`vsphere-iso` builder). This image is authored in the HashiCorp Configuration Language ("HCL2").
 
-Use of this project is mentioned in the **_VMware Validated Solution: Private Cloud Automation for VMware Cloud Foundation_** authored by the maintainer. Learn more about this solution at [vmware.com/go/vvs](https://vmware.com/go/vvs).
+Much of the code in this project was copied from  [packer-examples-for-vspere](https://github.com/vmware-samples/packer-examples-for-vsphere).
 
-By default, the machine image artifacts are transferred to a [vSphere Content Library][vsphere-content-library] as an OVF template and the temporary machine image is destroyed. If an item of the same name exists in the target content library, Packer will update the existing item with the new version of OVF template.
+Initialy, the image created by this project is a VM Template, however, the intent is to configure this image to be transferred to a [vSphere Content Library][vsphere-content-library] as an OVF template and the temporary machine image is destroyed.
 
-The following builds are available:
+This project builds Ubuntu Server 22.04 LTS via cloud-init:
 
-### Linux Distributions
-
-- VMware Photon OS 5
-- VMware Photon OS 4
-- Debian 12
-- Debian 11
-- Ubuntu Server 22.04 LTS (cloud-init)
-- Ubuntu Server 20.04 LTS (cloud-init)
-- Red Hat Enterprise Linux 9 Server
-- Red Hat Enterprise Linux 8 Server
-- Red Hat Enterprise Linux 7 Server
-- AlmaLinux OS 9
-- AlmaLinux OS 8
-- Rocky Linux 9
-- Rocky Linux 8
-- CentOS Stream 9
-- CentOS Stream 8
-- CentOS Linux 7
-- SUSE Linux Enterprise Server 15
-
-### Microsoft Windows - _Core and Desktop Experience_
-
-- Microsoft Windows Server 2022 - Standard and Datacenter
-- Microsoft Windows Server 2019 - Standard and Datacenter
-- Microsoft Windows 11
-- Microsoft Windows 10
-
-> **Note**
->
-> - The Microsoft Windows 11 machine image uses a virtual trusted platform module (vTPM). Refer to the VMware vSphere [product documenation][vsphere-tpm] for requirements and pre-requisites.
->
-> - The Microsoft Windows 11 machine image is not transferred to the content library by default. It is **not supported** to clone an encrypted virtual machine to the content library as an OVF Template. You can adjust the common content library settings to use VM Templates.
 
 ## Requirements
 
@@ -62,9 +30,7 @@ The following builds are available:
 
 Operating systems and versions tested with the project:
 
-- VMware Photon OS 4.0 (`x86_64`)
-- Ubuntu Server 22.04 LTS (`x86_64`)
-- macOS Monterey and Ventura (Intel)
+- macOS Ventura (Intel)
 
 > **Note**
 >
@@ -78,89 +44,74 @@ Operating systems and versions tested with the project:
 > ```
 
 **Packer**:
-
-- HashiCorp [Packer][packer-install] 1.9.1 or higher.
+- HashiCorp [Packer][packer-install] 1.9.2 or higher.
 
   > **Note**
   >
-  > Click on the operating system name to display the installation steps.
+  > I use an [Ansible](https://github.com/DonBower/ansible) project to install products on my MacOS.
+  > most likely, you don't have access to this project, so here is the task file I use:
+```
+---
+# We need to download packer archive from here on our remote packer instance. 
+# This will give a zip archive file. 
+# To unzip packer archive, we need to install unzip so we can unzip packer archive and takeout needed binary. 
+# Once this is done, we need to:
+#   - unzip packer archive, 
+#   - move our packer binary to “/usr/local/bin”
+#   - make hashiUser:hashiGroup as the owner of this binary with needed permissions.
 
-  - <details>
-      <summary>Photon OS</summary>
+- name: Check if packer binary file exists
+  stat:
+    path: /usr/local/bin/packer
+  register: packer_binary_file
 
-    ```shell
-    PACKER_VERSION="1.9.1"
-    OS_PACKAGES="wget unzip"
+- name: Get Current packer version
+  shell: packer --version | awk '{print $2}' | cut -d 'v' -f 2
+  changed_when: false
+  register: current_packerVersion
+  when: packer_binary_file.stat.exists
 
-    if [[ $(uname -m) == "x86_64" ]]; then
-      LINUX_ARCH="amd64"
-    elif [[ $(uname -m) == "aarch64" ]]; then
-      LINUX_ARCH="arm64"
-    fi
+- name: Current packer Version
+  debug: var=current_packerVersion
 
-    tdnf install ${OS_PACKAGES} -y
+- name: Check if packer zip file exists
+  stat:
+    path: /tmp/packer_{{ packerVersion }}_{{ clientOS }}_{{ clientArch }}.zip
+  register: packer_zip_file
 
-    wget -q https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_${LINUX_ARCH}.zip
+- name: Download binary
+  get_url:
+    url: https://releases.hashicorp.com/packer/{{ packerVersion }}/packer_{{ packerVersion }}_{{ clientOS }}_{{ clientArch }}.zip
+    dest: /tmp/packer_{{ packerVersion }}_{{ clientOS }}_{{ clientArch }}.zip
+    owner: "{{ hashiUser }}"
+    group: "{{ hashiGroup }}"
+    mode: 0755
+    # checksum: "{{packer_checksum }}"
+  register: packer_download
+  when: (not packer_binary_file.stat.exists) or (not packer_zip_file.stat.exists and not current_packerVersion.stdout == packerVersion)
 
-    unzip -o -d /usr/local/bin/ packer_${PACKER_VERSION}_linux_${LINUX_ARCH}.zip
-    ```
+# - debug: var=packer_download
 
-    </details>
-
-  - <details>
-      <summary>Ubuntu</summary>
-
-    The Terraform packages are signed using a private key controlled by HashiCorp, so you must configure your system to trust that HashiCorp key for package authentication.
-
-    To configure your repository:
-
-    ```shell
-    sudo bash -c 'wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor > /usr/share/keyrings/hashicorp-archive-keyring.gpg'
-    ```
-
-    Verify the key's fingerprint:
-
-    ```shell
-    gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
-    ```
-
-    The fingerprint must match E8A0 32E0 94D8 EB4E A189 D270 DA41 8C88 A321 9F7B. You can also verify the key on [Security at HashiCorp][hcp-security] under Linux Package Checksum Verification.
-
-    Add the official HashiCorp repository to your system:
-
-    ```shell
-    sudo bash -c 'echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
-    https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list'
-    ```
-
-    Install Packer from HashiCorp repository:
-
-    ```shell
-    sudo apt update && sudo apt install packer
-    ```
-
-    </details>
-
-  - <details>
-      <summary>macOS</summary>
-
-    ```shell
-    brew tap hashicorp/tap
-
-    brew install hashicorp/tap/packer
-    ```
-
-    </details>
+- name: Unzip packer archive
+  unarchive:
+    src: /tmp/packer_{{ packerVersion }}_{{ clientOS }}_{{ clientArch }}.zip
+    dest: /usr/local/bin
+    copy: no
+    owner: "{{ hashiUser }}"
+    group: "{{ hashiGroup }}"
+    mode: 0755
+  when: packer_download.changed or (packer_zip_file.stat.exists and not current_packerVersion.stdout == packerVersion)
+  ```
 
 - Packer plugins:
 
   > **Note**
   >
-  > Required plugins are automatically downloaded and initialized when using `./build.sh`. For dark sites, you may download the plugins and place these same directory as your Packer executable `/usr/local/bin` or `$HOME/.packer.d/plugins`.
+  > Required plugins are automatically downloaded and initialized when using `packer init .`. For dark sites, you may download the plugins and place these same directory as your Packer executable `/usr/local/bin` or `$HOME/.packer.d/plugins`.
 
   - HashiCorp [Packer Plugin for VMware vSphere][packer-plugin-vsphere] 1.2.0 or later.
   - [Packer Plugin for Git][packer-plugin-git] 0.4.2 or later - a community plugin for HashiCorp Packer.
-  - [Packer Plugin for Windows Updates][packer-plugin-windows-update] 0.14.3 or later - a community plugin for HashiCorp Packer.
+
 
 **Additional Software Packages**:
 
@@ -168,80 +119,10 @@ The following additional software packages must be installed on the operating sy
 
 > **Note**
 >
-> Click on the operating system name to display the installation steps for all prerequisites.
+> Additional software is required. As mentioned, I use Ansible to install these, but you can do it manually:
 
 - <details>
-    <summary>Photon OS</summary>
-
-  - [git][download-git] command-line tools.
-
-  - [ansible-core][ansible-docs] 2.15.
-
-  - [jq][jq] A command-line JSON processor.
-
-  - xorriso - A command-line .iso creator.
-
-    ```shell
-    pip3 install --user ansible-core==2.15
-    export PATH="$HOME/.local/bin:$PATH"
-    tdnf -y install git jq xorriso
-    ```
-
-  - HashiCorp [Terraform][terraform-install] 1.5.0 or higher.
-
-    ```shell
-    TERRAFORM_VERSION="1.5.0"
-    OS_PACKAGES="wget unzip"
-
-    if [[ $(uname -m) == "x86_64" ]]; then
-      LINUX_ARCH="amd64"
-    elif [[ $(uname -m) == "aarch64" ]]; then
-      LINUX_ARCH="arm64"
-    fi
-
-    tdnf install ${OS_PACKAGES} -y
-
-    wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${LINUX_ARCH}.zip
-
-    unzip -o -d /usr/local/bin/ terraform_${TERRAFORM_VERSION}_linux_${LINUX_ARCH}.zip
-    ```
-
-  </details>
-
-- <details>
-    <summary>Ubuntu</summary>
-
-  - [git][download-git] command-line tools.
-
-  - [ansible-core][ansible-docs] 2.15.
-
-  - [jq][jq] A command-line JSON processor.
-
-  - xorriso - A command-line .iso creator.
-
-  - mkpasswd - Password generating utility
-
-  - HashiCorp [Terraform][terraform-install] 1.5.0 or higher.
-
-    ```shell
-    pip3 install --user ansible-core==2.15
-    sudo apt -y install git jq xorriso whois terraform
-    ```
-
-  - [gomplate][gomplate-install] 3.11.5 or higher.
-
-    ```shell
-    GOMPLATE_VERSION="3.11.5"
-    LINUX_ARCH="amd64"
-
-    sudo curl -o /usr/local/bin/gomplate -sSL https://github.com/hairyhenderson/gomplate/releases/download/v${GOMPLATE_VERSION}/gomplate_linux-${LINUX_ARCH}
-    sudo chmod 755 /usr/local/bin/gomplate
-    ```
-
-  </details>
-
-- <details>
-    <summary>macOS</summary>
+    <summary>Additional software</summary>
 
   - [git][download-git] command-line tools.
 
@@ -270,7 +151,7 @@ The following additional software packages must be installed on the operating sy
 
 **Platform**:
 
-- VMware vSphere 7.0 Update 3D or later.
+- VMware vSphere 7.0 Update 3N or later.
 
 ## Configuration
 
@@ -284,8 +165,8 @@ You can choose between two options to get the source code:
 #### Download the Latest Release
 
 ```console
-TAG_NAME=$(curl -s https://api.github.com/repos/vmware-samples/packer-examples-for-vsphere/releases | jq  -r '.[0].tag_name')
-TARBALL_URL=$(curl -s https://api.github.com/repos/vmware-samples/packer-examples-for-vsphere/releases | jq  -r '.[0].tarball_url')
+TAG_NAME=$(curl -s https://api.github.com/repos/DonBower/packer-vsphere-ubuntu/releases | jq  -r '.[0].tag_name')
+TARBALL_URL=$(curl -s https://api.github.com/repos/DonBower/packer-vsphere-ubuntu/releases | jq  -r '.[0].tarball_url')
 
 mkdir packer-examples-for-vsphere
 cd packer-examples-for-vsphere
@@ -303,9 +184,9 @@ git switch -c $TAG_NAME HEAD
 > You may also clone `main` for the latest prerelease updates.
 
 ```console
-TAG_NAME=$(curl -s https://api.github.com/repos/vmware-samples/packer-examples-for-vsphere/releases | jq  -r '.[0].tag_name')
+TAG_NAME=$(curl -s https://api.github.com/repos/DonBower/packer-vsphere-ubuntu/releases | jq  -r '.[0].tag_name')
 
-git clone https://github.com/vmware-samples/packer-examples-for-vsphere.git
+git clone https://github.com/DonBower/packer-vsphere-ubuntu.git
 cd packer-examples-for-vsphere
 git switch -c $TAG_NAME $TAG_NAME
 ```
@@ -317,18 +198,16 @@ git switch -c $TAG_NAME $TAG_NAME
 The directory structure of the repository.
 
 ```console
-├── build.sh
-├── build.tmpl
-├── build.yaml
 ├── CHANGELOG.md
 ├── CODE_OF_CONDUCT.md
-├── config.sh
 ├── CONTRIBUTING.md
 ├── LICENSE
 ├── MAINTAINERS.md
 ├── NOTICE
 ├── README.md
-├── set-envvars.sh
+├── ubuntu.auto.pkrvars.hcl
+├── ubuntu.pkr.hcl
+├── variables.pkr.hcl
 ├── ansible
 │   ├── ansible.cfg
 │   ├── main.yml
@@ -336,33 +215,7 @@ The directory structure of the repository.
 │       └── <role>
 │           └── *.yml
 ├── artifacts
-├── builds
-│   ├── ansible.pkrvars.hcl.example
-│   ├── build.pkrvars.hcl.example
-│   ├── common.pkrvars.hcl.example
-│   ├── proxy.pkrvars.hcl.example
-│   ├── rhsm.pkrvars.hcl.example
-│   ├── scc.pkrvars.hcl.example
-│   ├── vsphere.pkrvars.hcl.example
-│   ├── linux
-│   │   └── <distribution>
-│   │       └── <version>
-│   │           ├── *.pkr.hcl
-│   │           ├── *.auto.pkrvars.hcl
-│   │           └── data
-│   │               └── ks.pkrtpl.hcl
-│   └── windows
-│       └── <distribution>
-│           └── <version>
-│               ├── *.pkr.hcl
-│               ├── *.auto.pkrvars.hcl
-│               └── data
-│                   └── autounattend.pkrtpl.hcl
 ├── manifests
-├── scripts
-│   ├── linux
-│   └── windows
-│       └── *.ps1
 └── terraform
     ├── vsphere-role
     │   └── *.tf
@@ -375,13 +228,7 @@ The directory structure of the repository.
         │   └── *.tf
         ├── content-library-ovf-linux-guest-customization-hcp-packer
         │   └── *.tf
-        ├── content-library-ovf-windows-guest-customization
-        │   └── *.tf
-        ├── content-library-ovf-windows-guest-customization-hcp-packer
-        │   └── *.tf
         ├── content-library-template-linux-guest-customization-hcp-packer
-        │   └── *.tf
-        ├── content-library-template-windows-guest-customization-hcp-packer
         │   └── *.tf
         ├── template-linux-cloud-init
         │   └── *.tf
@@ -391,10 +238,6 @@ The directory structure of the repository.
         │   └── *.tf
         ├── template-linux-guest-customization-hcp-packer
         │   └── *.tf
-        ├── template-windows-guest-customization
-        │   └── *.tf
-        └── template-windows-guest-customization-hcp-packer
-            └── *.tf
 ```
 
 The files are distributed in the following directories.

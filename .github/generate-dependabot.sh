@@ -17,7 +17,7 @@ echo "> Generating the .github/dependabot.yml configuration file..."
 cat >$dependabot_file <<EOL
 ---
 # This file is auto-generated. Do not manually amend the configuration.
-# https://github.com/vmware-samples/packer-examples-for-vsphere/blob/main/.github/generate-dependabot.sh
+# https://github.com/DonBower/packer-vsphere-ubuntu/blob/main/.github/generate-dependabot.sh
 
 version: 2
 updates:
