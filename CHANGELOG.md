@@ -1,5 +1,14 @@
 # Release History
 
+## 0.1.2
+
+> Release Date: 2023-08-16
+
+:boom: **Enhancement**:
+
+- Add Linter Badge (code quality)
+- Reduce boot disk size
+
 ## 0.1.1
 
 > Release Date: 2023-08-15
