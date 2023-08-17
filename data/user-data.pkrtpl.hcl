@@ -132,7 +132,7 @@ autoinstall:
         id: format-log
       - name: audit
         volgroup: lvm_volgroup-0
-        size: 1024M
+        size: 512M
         wipe: superblock
         type: lvm_partition
         id: lvm_partition-audit
