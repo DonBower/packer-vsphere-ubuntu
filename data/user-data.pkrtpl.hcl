@@ -30,7 +30,7 @@ autoinstall:
         type: disk
         id: disk-sda
       - device: disk-sda
-        size: 1024M
+        size: 256M
         wipe: superblock
         flag: boot
         number: 1
@@ -43,7 +43,7 @@ autoinstall:
         type: format
         id: format-efi
       - device: disk-sda
-        size: 1024M
+        size: 512M
         wipe: superblock
         number: 2
         type: partition
@@ -66,7 +66,7 @@ autoinstall:
         id: lvm_volgroup-0
       - name: root
         volgroup: lvm_volgroup-0
-        size: 12288M
+        size: 8192M
         wipe: superblock
         type: lvm_partition
         id: lvm_partition-root
@@ -77,7 +77,7 @@ autoinstall:
         id: format-root
       - name: home
         volgroup: lvm_volgroup-0
-        size: 4096M
+        size: 512M
         wipe: superblock
         type: lvm_partition
         id: lvm_partition-home
@@ -88,7 +88,7 @@ autoinstall:
         id: format-home
       - name: opt
         volgroup: lvm_volgroup-0
-        size: 2048M
+        size: 512M
         wipe: superblock
         type: lvm_partition
         id: lvm_partition-opt
@@ -99,7 +99,7 @@ autoinstall:
         id: format-opt
       - name: tmp
         volgroup: lvm_volgroup-0
-        size: 3072M
+        size: 1024M
         wipe: superblock
         type: lvm_partition
         id: lvm_partition-tmp
@@ -110,7 +110,7 @@ autoinstall:
         id: format-tmp
       - name: var
         volgroup: lvm_volgroup-0
-        size: 4096M
+        size: 1024M
         wipe: superblock
         type: lvm_partition
         id: lvm_partition-var
@@ -121,7 +121,7 @@ autoinstall:
         id: format-var
       - name: log
         volgroup: lvm_volgroup-0
-        size: 4096M
+        size: 1024M
         wipe: superblock
         type: lvm_partition
         id: lvm_partition-log
@@ -132,7 +132,7 @@ autoinstall:
         id: format-log
       - name: audit
         volgroup: lvm_volgroup-0
-        size: 4096M
+        size: 1024M
         wipe: superblock
         type: lvm_partition
         id: lvm_partition-audit
