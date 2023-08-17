@@ -110,7 +110,7 @@ autoinstall:
         id: format-tmp
       - name: var
         volgroup: lvm_volgroup-0
-        size: 1024M
+        size: 2048M
         wipe: superblock
         type: lvm_partition
         id: lvm_partition-var
