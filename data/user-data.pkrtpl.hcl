@@ -121,7 +121,7 @@ autoinstall:
         id: format-var
       - name: log
         volgroup: lvm_volgroup-0
-        size: 1024M
+        size: 512M
         wipe: superblock
         type: lvm_partition
         id: lvm_partition-log
