@@ -1,5 +1,13 @@
 # Release History
 
+## 0.1.3
+
+> Release Date: 2023-09-05
+
+:boom: **Enhancement**:
+
+- Update Github Actions dependabot version
+
 ## 0.1.2
 
 > Release Date: 2023-08-16
