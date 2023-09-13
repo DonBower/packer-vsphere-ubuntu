@@ -1,5 +1,21 @@
 # Release History
 
+## 0.1.4
+
+> Release Date: 2023-09-13
+
+:boom: **Enhancement**:
+
+- Modify image name format
+
+## 0.1.3
+
+> Release Date: 2023-09-13
+
+:sweat_drops: **Chore**:
+
+- dependabot update of hcp provider
+
 ## 0.1.2
 
 > Release Date: 2023-08-16
