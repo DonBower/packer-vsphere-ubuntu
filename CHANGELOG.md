@@ -1,5 +1,18 @@
 # Release History
 
+## 0.2.1
+
+> Release Date: 2023-09-24
+
+:bug: **Bug Fix**:
+
+Rename user and configure role files to main.yaml.
+
+:sweat_drops: **Chore**:
+
+- Remove superfluous build directory
+- Rename all .yml files to .yaml
+
 ## 0.2.0
 
 > Release Date: 2023-09-24
