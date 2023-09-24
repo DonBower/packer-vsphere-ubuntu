@@ -24,18 +24,18 @@ autoinstall:
     layout: ${vm_guest_os_keyboard}
   storage:
     config:
-      - ptable: gpt
-        path: /dev/sda
-        wipe: superblock
-        type: disk
+      - type: disk
         id: disk-sda
-      - device: disk-sda
+        path: /dev/sda
+        ptable: gpt
+        wipe: superblock
+      - type: partition
+        device: disk-sda
         size: 256M
         wipe: superblock
         flag: boot
         number: 1
         grub_device: true
-        type: partition
         id: partition-0
       - fstype: fat32
         volume: partition-0
