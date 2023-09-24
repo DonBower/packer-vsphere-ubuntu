@@ -171,7 +171,7 @@ build {
 
   provisioner "ansible" {
     user          = var.build_username
-    playbook_file = "${path.cwd}/ansible/main.yml"
+    playbook_file = "${path.cwd}/ansible/main.yaml"
     roles_path    = "${path.cwd}/ansible/roles"
     ansible_env_vars = [
       "ANSIBLE_CONFIG=${path.cwd}/ansible/ansible.cfg"
