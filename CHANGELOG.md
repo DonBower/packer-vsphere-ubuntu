@@ -1,5 +1,25 @@
 # Release History
 
+## 0.2.0
+
+> Release Date: 2023-09-24
+
+:boom: **Enhancement**:
+
+- Add image packages
+  - acl
+  - gnupg
+  - lvm2
+  - netcat
+  - nfs-common
+  - python3.11
+  - python3-pip
+  - python-is-python3
+
+:sweat_drops: **Chore**:
+
+- Remove superfluous files from ansible directory
+
 ## 0.1.4
 
 > Release Date: 2023-09-13

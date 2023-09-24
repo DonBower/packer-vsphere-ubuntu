@@ -1,16 +1,26 @@
 ---
-- name: "Prepare the {{ ansible_facts['distribution'] }} guest operating system."
-  include_tasks: "{{ ansible_facts['distribution'] | lower }}.yml"
-  when: "ansible_facts['distribution'] == 'Debian'"
-- name: "Prepare the {{ ansible_facts['distribution'] }} guest operating system."
-  include_tasks: "{{ ansible_facts['distribution'] | lower }}.yml"
-  when: "ansible_facts['distribution'] == 'Ubuntu'"
-- name: "Prepare the {{ ansible_facts['distribution'] }} guest operating system."
-  include_tasks: redhat.yml
-  when: "ansible_facts['distribution'] in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux']"
-- name: "Prepare the {{ ansible_facts['os_family'] }} guest operating system."
-  include_tasks: "{{ ansible_facts['lsb']['codename'] | lower }}.yml"
-  when: "ansible_facts['os_family'] == 'VMware Photon OS'"
-- name: "Prepare the {{ ansible_facts['distribution'] }} guest operating system."
-  include_tasks: sles.yml
-  when: "ansible_facts['distribution'] == 'SLES'"
+- name: "Updating the guest operating system."
+  apt:
+    force_apt_get: true
+    name: "*"
+    state: latest     # noqa package-latest
+    update_cache: "yes"
+- name: "Installing additional packages."
+  apt:
+    name:
+      - acl
+      - bash-completion
+      - ca-certificates
+      - curl
+      - git
+      - gnupg
+      - lvm2
+      - net-tools
+      - netcat
+      - nfs-common
+      - python3.11
+      - python3-pip
+      - python-is-python3
+      - unzip
+      - wget
+    state: latest     # noqa package-latest
