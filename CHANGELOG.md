@@ -14,7 +14,7 @@
 
 > Release Date: 2023-09-24
 
-:bug: **Bug Fix**:
+:bug: **Bugfix**:
 
 Rename user and configure role files to main.yaml.
 
