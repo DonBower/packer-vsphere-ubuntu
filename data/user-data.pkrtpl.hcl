@@ -29,154 +29,184 @@ autoinstall:
         path: /dev/sda
         ptable: gpt
         wipe: superblock
+
       - type: partition
+        id: partition-0
         device: disk-sda
+        number: 1
         size: 256M
         wipe: superblock
         flag: boot
-        number: 1
         grub_device: true
-        id: partition-0
-      - fstype: fat32
-        volume: partition-0
-        label: EFIFS
-        type: format
-        id: format-efi
-      - device: disk-sda
+
+      - type: partition
+        id: partition-1
+        device: disk-sda
+        number: 2
         size: 512M
         wipe: superblock
-        number: 2
-        type: partition
-        id: partition-1
-      - fstype: xfs
-        volume: partition-1
-        label: BOOTFS
-        type: format
-        id: format-boot
-      - device: disk-sda
+
+      - type: partition
+        id: partition-2
+        device: disk-sda
+        number: 3
         size: -1
         wipe: superblock
-        number: 3
-        type: partition
-        id: partition-2
-      - name: sysvg
+
+      - type: format
+        id: format-efi
+        volume: partition-0
+        fstype: fat32
+        label: EFIFS
+
+      - type: format
+        id: format-boot
+        volume: partition-1
+        fstype: xfs
+        label: BOOTFS
+
+      - type: lvm_volgroup
+        id: lvm_volgroup-0
         devices:
           - partition-2
-        type: lvm_volgroup
-        id: lvm_volgroup-0
-      - name: root
+        name: sysvg
+
+      - type: lvm_partition
+        id: lvm_partition-root
         volgroup: lvm_volgroup-0
+        name: root
         size: 8192M
         wipe: superblock
-        type: lvm_partition
-        id: lvm_partition-root
-      - fstype: xfs
-        volume: lvm_partition-root
-        type: format
-        label: ROOTFS
-        id: format-root
-      - name: home
-        volgroup: lvm_volgroup-0
-        size: 512M
-        wipe: superblock
-        type: lvm_partition
+
+      - type: lvm_partition
         id: lvm_partition-home
-      - fstype: xfs
-        volume: lvm_partition-home
-        type: format
-        label: HOMEFS
-        id: format-home
-      - name: opt
         volgroup: lvm_volgroup-0
+        name: home
         size: 512M
         wipe: superblock
-        type: lvm_partition
+      
+      - type: lvm_partition
         id: lvm_partition-opt
-      - fstype: xfs
-        volume: lvm_partition-opt
-        type: format
-        label: OPTFS
-        id: format-opt
-      - name: tmp
         volgroup: lvm_volgroup-0
+        name: opt
+        size: 512M
+        wipe: superblock
+      
+      - type: lvm_partition
+        id: lvm_partition-tmp
+        volgroup: lvm_volgroup-0
+        name: tmp
         size: 1024M
         wipe: superblock
-        type: lvm_partition
-        id: lvm_partition-tmp
-      - fstype: xfs
-        volume: lvm_partition-tmp
-        type: format
-        label: TMPFS
+
+      - type: format
+        id: format-root
+        volume: lvm_partition-root
+        fstype: xfs
+        label: ROOTFS
+
+      - type: format
+        id: format-home
+        volume: lvm_partition-home
+        fstype: xfs
+        label: HOMEFS
+      
+      - type: format
+        id: format-opt
+        volume: lvm_partition-opt
+        fstype: xfs
+        label: OPTFS
+
+      - type: format
         id: format-tmp
-      - name: var
+        volume: lvm_partition-tmp
+        fstype: xfs
+        label: TMPFS
+
+      - type: lvm_partition
+        id: lvm_partition-var
         volgroup: lvm_volgroup-0
+        name: var
         size: 2048M
         wipe: superblock
-        type: lvm_partition
-        id: lvm_partition-var
-      - fstype: xfs
-        volume: lvm_partition-var
-        type: format
-        label: VARFS
+
+      - type: format
         id: format-var
-      - name: log
-        volgroup: lvm_volgroup-0
-        size: 512M
-        wipe: superblock
-        type: lvm_partition
+        volume: lvm_partition-var
+        fstype: xfs
+        label: VARFS
+
+      - type: lvm_partition
         id: lvm_partition-log
-      - fstype: xfs
-        volume: lvm_partition-log
-        type: format
-        label: LOGFS
-        id: format-log
-      - name: audit
         volgroup: lvm_volgroup-0
+        name: log
         size: 512M
         wipe: superblock
-        type: lvm_partition
+
+      - type: format
+        id: format-log
+        volume: lvm_partition-log
+        fstype: xfs
+        label: LOGFS
+
+      - type: lvm_partition
         id: lvm_partition-audit
-      - fstype: xfs
-        volume: lvm_partition-audit
-        type: format
-        label: AUDITFS
+        volgroup: lvm_volgroup-0
+        name: audit
+        size: 512M
+        wipe: superblock
+
+      - type: format
         id: format-audit
-      - path: /
-        device: format-root
-        type: mount
+        volume: lvm_partition-audit
+        fstype: xfs
+        label: AUDITFS
+
+      - type: mount
         id: mount-root
-      - path: /boot
-        device: format-boot
-        type: mount
+        device: format-root
+        path: /
+
+      - type: mount
         id: mount-boot
-      - path: /boot/efi
-        device: format-efi
-        type: mount
+        device: format-boot
+        path: /boot
+
+      - type: mount
         id: mount-efi
-      - path: /home
-        device: format-home
-        type: mount
+        device: format-efi
+        path: /boot/efi
+
+      - type: mount
         id: mount-home
-      - path: /opt
-        device: format-opt
-        type: mount
+        device: format-home
+        path: /home
+
+      - type: mount
         id: mount-opt
-      - path: /tmp
-        device: format-tmp
-        type: mount
+        device: format-opt
+        path: /opt
+
+      - type: mount
         id: mount-tmp
-      - path: /var
-        device: format-var
-        type: mount
+        device: format-tmp
+        path: /tmp
+
+      - type: mount
         id: mount-var
-      - path: /var/log
-        device: format-log
-        type: mount
+        device: format-var
+        path: /var
+
+      - type: mount
         id: mount-log
-      - path: /var/audit
-        device: format-audit
-        type: mount
+        device: format-log
+        path: /var/log
+
+      - type: mount
         id: mount-audit
+        device: format-audit
+        path: /var/audit
+
   identity:
     hostname: ubuntu-server
     username: ${build_username}

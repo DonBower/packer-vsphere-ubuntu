@@ -1,5 +1,15 @@
 # Release History
 
+## 0.2.2
+
+> Release Date: 2023-10-07
+
+:sweat_drops: **Chore**:
+
+- Add version.txt
+- Reformat user-data.prtpl.hcl storage section
+- Rename image to new standard.
+
 ## 0.2.1
 
 > Release Date: 2023-09-24

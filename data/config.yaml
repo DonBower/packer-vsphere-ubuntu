@@ -1,0 +1,126 @@
+---
+iso: 
+  datastore: isostore
+  path: linux/ubuntu
+  file: ubuntu-22.04.3-live-server-amd64.iso
+  checksum:
+    type: sha256
+    value: a4acfda10b18da50e2ec50ccaf860d7f20b389df8765611142305c0e911d16fd
+vm:
+  cpus: 4
+  ram: 32384
+  scsi:
+    - pvscsi
+    - pvscsi
+disk:
+  sda:
+    size: 40960
+    thin: false
+    eager: false
+    controller: 0
+    partitions:
+      sda1:
+        mount: /boot
+        fstype: xfs
+        size: 1024
+        label: BOOTFS
+        grow: false
+        primary: true
+        fsoptions:
+      sda2:
+        mount: /boot/efi
+        fstype: efi
+        size: 1024
+        label: EFIFS
+        grow: false
+        primary: true
+        fsoptions: "defaults,uid=0,gid=0,umask=077,shortname=winnt"
+      sda3:
+        mount: pv.01
+        fstype: lvmpv
+        size: 100
+        label: SYSVG
+        grow: true
+        primary: true
+        fsoptions:
+  # sdb:
+  #   size: 32768
+  #   thin: false
+  #   eager: false
+  #   controller: 1
+  #   partitions:
+  #     sdb1:
+  #       mount: pv.02
+  #       fstype: lvmpv
+  #       size: 100
+  #       label: BLDVG
+  #       grow: true
+  #       primary: true
+  #       fsoptions:
+lvm:
+  sysvg:
+    pv: pv.01
+    peSize: 4096
+    disks:
+      - sda
+    lvms:
+      SWAPFS:
+        name: lv_swap
+        fstype: swap
+        size: 1024
+        mount: swap
+        fsoptions:
+      ROOTFS:
+        name: lv_root
+        fstype: xfs
+        size: 12288
+        mount: /
+        fsoptions:
+      HOMEFS:
+        name: lv_home
+        fstype: xfs
+        size: 4096
+        mount: /home
+        fsoptions: "nodev,nosuid"
+      OPTFS:
+        name: lv_opt
+        fstype: xfs
+        size: 2048
+        mount: /opt
+        fsoptions: "nodev"
+      TMPFS:
+        name: lv_tmp
+        fstype: xfs
+        size: 4096
+        mount: /tmp
+        fsoptions: "nodev,noexec,nosuid"
+      VARFS:
+        name: lv_var
+        fstype: xfs
+        size: 4086
+        mount: /var
+        fsoptions: "nodev"
+      LOGFS:
+        name: lv_log
+        fstype: xfs
+        size: 4096
+        mount: /var/log
+        fsoptions: "nodev,noexec,nosuid"
+      AUDITFS:
+        name: lv_audit
+        fstype: xfs
+        size: 4096
+        mount: /var/log/audit
+        fsoptions: "nodev,noexec,nosuid"
+  # bldvg:
+  #   pv: pv.02
+  #   peSize: 4096
+  #   disks:
+  #     - sdb
+  #   lvms:
+  #     BUILD:
+  #       name: lv_build
+  #       fstype: xfs
+  #       size: 24576
+  #       mount: /build
+  #       fsoptions: "nodev"
