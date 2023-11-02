@@ -1,5 +1,13 @@
 # Release History
 
+## 0.2.3
+
+> Release Date: 2023-11-01
+
+:sweat_drops: **Chore**:
+
+- Correct License, per #69 raised by @tenthirtyam.
+
 ## 0.2.2
 
 > Release Date: 2023-10-07
