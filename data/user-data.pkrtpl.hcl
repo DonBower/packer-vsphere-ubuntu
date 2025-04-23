@@ -34,7 +34,7 @@ autoinstall:
         id: partition-0
         device: disk-sda
         number: 1
-        size: 256M
+        size: 512M
         wipe: superblock
         flag: boot
         grub_device: true
@@ -43,7 +43,7 @@ autoinstall:
         id: partition-1
         device: disk-sda
         number: 2
-        size: 512M
+        size: 1024M
         wipe: superblock
 
       - type: partition
