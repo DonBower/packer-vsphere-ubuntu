@@ -1,6 +1,6 @@
 /*
     DESCRIPTION:
-    Ubuntu Server 22.04 LTS variables used by the Packer Plugin for VMware vSphere (vsphere-iso).
+    Ubuntu Server 24.04 LTS variables used by the Packer Plugin for VMware vSphere (vsphere-iso).
 */
 
 // Guest Operating System Metadata
@@ -9,7 +9,7 @@ vm_guest_os_keyboard = "us"
 vm_guest_os_timezone = "UTC"
 vm_guest_os_family   = "linux"
 vm_guest_os_name     = "ubuntu"
-vm_guest_os_version  = "22.04"
+vm_guest_os_version  = "24.04"
 
 // Virtual Machine Guest Operating System Setting
 vm_guest_os_type = "ubuntu64Guest"
@@ -29,9 +29,9 @@ vm_network_card          = "vmxnet3"
 
 // Removable Media Settings
 iso_path           = "linux/ubuntu"
-iso_file           = "ubuntu-22.04.3-live-server-amd64.iso"
+iso_file           = "ubuntu-24.04.2-live-server-amd64.iso"
 iso_checksum_type  = "sha256"
-iso_checksum_value = "a4acfda10b18da50e2ec50ccaf860d7f20b389df8765611142305c0e911d16fd"
+iso_checksum_value = "d6dab0c3a657988501b4bd76f1297c053df710e06e0c3aece60dead24f270b4d"
 
 // Boot Settings
 vm_boot_order = "disk,cdrom"

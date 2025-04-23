@@ -18,7 +18,7 @@
       - net-tools
       - netcat
       - nfs-common
-      - python3.11
+      - python3.13
       - python3-pip
       - python-is-python3
       - unzip

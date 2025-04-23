@@ -2,10 +2,10 @@
 iso: 
   datastore: isostore
   path: linux/ubuntu
-  file: ubuntu-22.04.3-live-server-amd64.iso
+  file: ubuntu-24.04.2-live-server-amd64.iso
   checksum:
     type: sha256
-    value: a4acfda10b18da50e2ec50ccaf860d7f20b389df8765611142305c0e911d16fd
+    value: d6dab0c3a657988501b4bd76f1297c053df710e06e0c3aece60dead24f270b4d 
 vm:
   cpus: 4
   ram: 32384
