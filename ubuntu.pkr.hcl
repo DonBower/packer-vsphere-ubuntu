@@ -17,6 +17,10 @@ packer {
       version = ">= v1.2.0"
       source  = "github.com/hashicorp/vsphere"
     }
+    ansible = {
+      source  = "github.com/hashicorp/ansible"
+      version = "~> 1"
+    }
   }
 }
 
@@ -45,6 +49,7 @@ locals {
   build_version     = data.git-repository.cwd.head == "main" ? "${local.version_text}" : "${local.version_text}-rc"
   build_description = "Version: ${local.build_version}\nBuilt on: ${local.build_date}\n${local.build_by}\n${local.build_author}"
   iso_paths         = ["[${var.common_iso_datastore}] ${local.isoConfig.path}/${local.isoConfig.file}"]
+  # iso_paths         = ["/Volumes/isostore/linux/ubuntu/${local.isoConfig.file}"]
   iso_checksum      = "${local.isoConfig.checksum.type}:${local.isoConfig.checksum.value}"
   manifest_date     = formatdate("YYYY-MM-DD hh:mm:ss", timestamp())
   manifest_path     = "${path.cwd}/manifests/"
@@ -71,6 +76,11 @@ locals {
 
 //  BLOCK: source
 //  Defines the builder configuration blocks.
+
+source "file" "ubuntu-iso-file" {
+  source =  "/Volumes/isostore/linux/ubuntu/${local.isoConfig.file}"
+  target =  "dummy_artifact"
+}
 
 source "vsphere-iso" "linux-ubuntu" {
 
@@ -228,32 +238,32 @@ build {
     }
   }
 
-  // post-processor "vsphere-template" {
-  //   host                = var.vsphere_endpoint
-  //   username            = var.vsphere_username
-  //   password            = var.vsphere_password
-  //   insecure_connection = var.vsphere_insecure_connection
-  //   datacenter          = var.vsphere_datacenter
-  //   vm_name             = local.vm_name
-  //   folder              = var.vsphere_folder
-  //   library             = var.common_content_library_name
-  // }
-
-
-  dynamic "hcp_packer_registry" {
-    for_each = var.common_hcp_packer_registry_enabled ? [1] : []
-    content {
-      bucket_name = local.bucket_name
-      description = local.bucket_description
-      bucket_labels = {
-        "os_family" : var.vm_guest_os_family,
-        "os_name" : var.vm_guest_os_name,
-        "os_version" : var.vm_guest_os_version,
-      }
-      build_labels = {
-        "build_version" : local.build_version,
-        "packer_version" : packer.version,
-      }
-    }
+  post-processor "vsphere-template" {
+    host                = var.vsphere_endpoint
+    username            = var.vsphere_username
+    password            = var.vsphere_password
+    # insecure_connection = var.vsphere_insecure_connection
+    datacenter          = var.vsphere_datacenter
+    # vm_name             = local.vm_name
+    folder              = var.vsphere_folder
+    # library             = var.common_content_library_name
   }
+
+
+  # dynamic "hcp_packer_registry" {
+  #   for_each = var.common_hcp_packer_registry_enabled ? [1] : []
+  #   content {
+  #     bucket_name = local.bucket_name
+  #     description = local.bucket_description
+  #     bucket_labels = {
+  #       "os_family" : var.vm_guest_os_family,
+  #       "os_name" : var.vm_guest_os_name,
+  #       "os_version" : var.vm_guest_os_version,
+  #     }
+  #     build_labels = {
+  #       "build_version" : local.build_version,
+  #       "packer_version" : packer.version,
+  #     }
+  #   }
+  # }
 }
