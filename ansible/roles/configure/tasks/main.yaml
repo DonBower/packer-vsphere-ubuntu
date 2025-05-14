@@ -2,7 +2,6 @@
 - name: "Configure SSH for Public Key Authentication."
   shell: |
     sudo sed -i 's/.*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
-
 - name: "Setting hostname to localhost."
   shell: |
     cat /dev/null > /etc/hostname
@@ -20,7 +19,6 @@
 - name: "Disabling and clean tmp."
   shell: |
     sudo sed -i 's/D/#&/' /usr/lib/tmpfiles.d/tmp.conf
-
 - name: "Preparing cloud-init."
   shell: |
     rm -rf /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
@@ -29,13 +27,11 @@
     echo "disable_vmware_customization: false" >> /etc/cloud/cloud.cfg
     echo "datasource_list: [ VMware, OVF, None ]" > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
   when: ansible_distribution_version == "22.04" or ansible_distribution_version == "24.04"
-
 - name: "Modifying GRUB."
   shell: |
     sed -i -e "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\"/" /etc/default/grub
     update-grub
   when: ansible_distribution_version == "22.04" or ansible_distribution_version == "24.04"
-
 - name: "Setting SSH keys to regenerate on reboot, if neccessary."
   shell: |
     sudo tee /etc/rc.local << EOF
