@@ -242,7 +242,7 @@ build {
     host                = var.vsphere_endpoint
     username            = var.vsphere_username
     password            = var.vsphere_password
-    # insecure_connection = var.vsphere_insecure_connection
+    insecure_connection = var.vsphere_insecure_connection
     datacenter          = var.vsphere_datacenter
     # vm_name             = local.vm_name
     folder              = var.vsphere_folder
