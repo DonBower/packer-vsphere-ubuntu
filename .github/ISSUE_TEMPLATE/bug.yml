@@ -56,7 +56,7 @@ body:
     attributes:
       label: HashiCorp Packer
       description: Please provide the HashiCorp Packer version.
-      placeholder: 1.9.1
+      placeholder: 1.11.2
     validations:
       required: true
   - type: input
@@ -65,7 +65,7 @@ body:
       label: HashiCorp Packer Plugin for VMware vSphere
       description: >-
         Please provide the HashiCorp Packer Plugin for VMware vSphere version.
-      placeholder: 1.2.0
+      placeholder: 1.2.1
     validations:
       required: true
   - type: input
